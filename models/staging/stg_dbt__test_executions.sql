@@ -17,7 +17,7 @@ dbt_run as (
 
     select *
     from run_results
-    where data:args:which = 'test'
+    where data:args:which in ('test', 'build')
 
 ),
 
@@ -47,6 +47,7 @@ fields as (
         result.value:adapter_response:rows_affected::int as rows_affected
     from dbt_run,
         lateral flatten(input => data:results) as result
+    where startswith(node_id, 'test')
 
 ),
 
